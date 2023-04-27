@@ -12,6 +12,7 @@ int lock_fd = -1;
 char lock_file_name[255];
 
 void stop() {
+    close(lock_fd);
     unlink(lock_file_name);
     exit(0);
 }
@@ -56,6 +57,8 @@ int main(int argc, char **argv) {
             perror("Error while read lock file");
             return EXIT_FAILURE;
         }
+        close(fd);
+
         if (strcmp(buf, spid) != 0) {
             fprintf(stderr, "Lock file is corrupted, pid must be %s\n", spid);
             return EXIT_FAILURE;
